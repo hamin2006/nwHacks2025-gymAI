@@ -17,4 +17,8 @@
     width: 100vw;
     background-color: #f0f0f0;
   }
+  canvas {
+    transform: scaleX(-1);
+    transform-origin: center;
+  }
   
