@@ -1,34 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../css/LoginPage.css'; // Importing the CSS file
+import '../css/LoginPage.css';
 
 const LoginPage = () => {
-
-    const navigate = useNavigate();
-
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:8000/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
-
-        const data = await response.json();
-        if (data.status === 'success') {
-            setMessage('Login successful');
-            navigate('/homepage');
-
-        } else {
-            setMessage(data.message);
-            navigate('/homepage');
-        }
+        // Handle login logic here
+        setMessage('Login successful!');
+        navigate('/homepage'); // Navigate to the homepage
     };
 
     return (

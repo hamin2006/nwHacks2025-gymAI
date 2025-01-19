@@ -85,7 +85,7 @@ const Homepage = () => {
                     </form>
                 ) : (
                     <>
-                        <h1 className="welcome-title">Welcome Back, Harsh!</h1>
+                        <h1 className="welcome-title">Welcome Back!</h1>
                         <p className="welcome-message">
                             Choose From your previous workouts
                         </p>

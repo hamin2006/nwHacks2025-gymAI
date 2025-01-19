@@ -34,6 +34,10 @@ const Workout = () => {
         { name: 'Push Up', reps },
         { name: 'Sit Up', reps },
         { name: 'Squats', reps },
+
+    ];
+
+    const workoutsTwo = [
         { name: 'Wall Sits', reps },
         { name: 'Plank', reps },
         { name: 'High Knees', reps }
@@ -50,12 +54,23 @@ const Workout = () => {
                     <div key={index} className="workout-card">
                         <h2>{workout.name}</h2>
                         <p>Reps: {workout.reps}</p>
-                        <button onClick={() => startWorkout(workout.name)}>Start</button>
+                        <button className="start" onClick={() => startWorkout(workout.name)}>Start</button>
                     </div>
                 ))}
             </div>
-            <button onClick={finishWorkout}>Finish Workout</button>
-            <button onClick={goBack}>Go Back</button>
+            <div className="workout-columns">
+                {workoutsTwo.map((workout, index) => (
+                    <div key={index} className="workout-card">
+                        <h2>{workout.name}</h2>
+                        <p>Reps: {workout.reps}</p>
+                        <button className="start" onClick={() => startWorkout(workout.name)}>Start</button>
+                    </div>
+                ))}
+            </div>
+            <div className="bottom_buttons">
+            <button className="finish" onClick={finishWorkout}>Finish Workout</button>
+            <button className="finish" onClick={goBack}>Go Back</button>
+            </div>
         </div>
     );
 };
