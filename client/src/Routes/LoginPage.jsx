@@ -12,12 +12,12 @@ const LoginPage = () => {
         e.preventDefault();
         // Handle login logic here
         setMessage('Login successful!');
-        navigate('/homepage'); // Navigate to the homepage
+        navigate('/homepage');
     };
 
     return (
         <div className="login-container">
-            <h1 className="gym-ai-title">Gym AI</h1>
+            <h1 className="gym-ai-title">RepWise</h1>
             <div className="login-box">
                 <h1 className="login-title">Login</h1>
                 <form className="login-form" onSubmit={handleSubmit}>

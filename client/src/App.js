@@ -4,7 +4,7 @@ import "./css/App.css";
 import LoginPage from "./Routes/LoginPage";
 import Homepage from "./Routes/homepage";
 import Workout from "./Routes/Workout";
-import Exercise from "./Routes/Excercise";
+import Exercise from "./Routes/Exercise";
 import WebCam from "./Components/WebCam";
 
 function App() {

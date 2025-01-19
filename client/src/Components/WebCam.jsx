@@ -13,6 +13,8 @@ const WebcamWithLandmarks = ({exercise, callback, time}) => {
   const isInDownPositionRef = useRef(false);
   const situpsStateRef = useRef({ wasUpPosition: false });
   const [repInfo, setRepInfo] = useState([]);
+  const [res,setRes] = useState({});
+  const [lastLoggedTime, setLastLoggedTime] = useState(0);
   const Exercises = {
     SQUATS: "squats",
     PUSHUPS: "pushups",
@@ -217,6 +219,7 @@ const WebcamWithLandmarks = ({exercise, callback, time}) => {
     const canvasCtx = canvasRef.current ? canvasRef.current.getContext("2d") : null;
     if (canvasCtx) {
     holistic.onResults(async (results) => {
+      setRes(results);
       // Set canvas dimensions to match video
       canvasRef.current.width = videoRef.current.videoWidth;
       canvasRef.current.height = videoRef.current.videoHeight;
@@ -274,7 +277,7 @@ const WebcamWithLandmarks = ({exercise, callback, time}) => {
         situpsStateRef.current.wasUpPosition = isUpPosition;
       } else if (exercise === Exercises.PLANK) {
         setIsDown(exerciseFunctions[exercise](results));
-        logRepInfo(results, timer);
+        //setRepInfo();
       };
 
       if (results.poseLandmarks) drawLandmarks(canvasCtx, results.poseLandmarks, "red");
@@ -304,7 +307,9 @@ const WebcamWithLandmarks = ({exercise, callback, time}) => {
       let interval;
       if (isDown) {
         interval = setInterval(() => {
-          setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
+          setTimer((prevTimer) => {
+            return prevTimer > 0 ? prevTimer - 1 : 0;
+          });
         }, 1000);
       };
 
