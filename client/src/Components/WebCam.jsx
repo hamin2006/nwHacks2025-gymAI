@@ -12,7 +12,7 @@ const WebcamWithLandmarks = ({exercise, callback}) => {
   const armRaisedRef = useRef(false);
   const isInDownPositionRef = useRef(false);
   const situpsStateRef = useRef({ wasUpPosition: false });
-  const repInfo = [];
+  const [repInfo, setRepInfo] = useState([]);
   const Exercises = {
     SQUATS: "squats",
     PUSHUPS: "pushups",
@@ -137,11 +137,10 @@ const WebcamWithLandmarks = ({exercise, callback}) => {
   };
 
   const finishExercise =  () => {
-
     callback(repInfo);
   };
   
-  const logRepInfo = (results) => {
+  const logRepInfo = (results, repCurr) => {
     const leftHip = results.poseLandmarks?.[23] || null;
     const rightHip = results.poseLandmarks?.[24] || null;
     const leftShoulder = results.poseLandmarks?.[11] || null;
@@ -157,7 +156,8 @@ const WebcamWithLandmarks = ({exercise, callback}) => {
 
     if (exercise !== "plank" && exercise !== "wallsits") {
       const repData = {
-        rep: reps,
+        rep: repCurr,
+        exercise,
         landmarks: {
           leftHip: { x: leftHip?.x, y: leftHip?.y },
           rightHip: { x: rightHip?.x, y: rightHip?.y },
@@ -173,7 +173,7 @@ const WebcamWithLandmarks = ({exercise, callback}) => {
           rightKnee: { x: rightKnee?.x, y: rightKnee?.y }
         }
       };
-      repInfo.push(repData);
+      setRepInfo((prevRepInfo) => [...prevRepInfo, repData]);
     };
   };
 
@@ -225,16 +225,20 @@ const WebcamWithLandmarks = ({exercise, callback}) => {
           isInDownPositionRef.current = true;
         } else if (isUpPosition && isInDownPositionRef.current) {
           isInDownPositionRef.current = false;
-          setReps((prevReps) => prevReps + 1);
-          logRepInfo(results);
+            setReps((prevReps) => {
+            logRepInfo(results, prevReps + 1);
+            return prevReps + 1;
+            });
         }
       } else if (exercise === Exercises.SQUATS) {
         const isDown = exerciseFunctions[exercise](results);
         if (isDown) {
           if (!armRaisedRef.current) {
             armRaisedRef.current = true;
-            setReps((prevReps) => prevReps + 1);
-            logRepInfo(results);
+            setReps((prevReps) => {
+              logRepInfo(results, prevReps + 1);
+              return prevReps + 1;
+              });
           };
         } else {
           armRaisedRef.current = false;
@@ -242,8 +246,10 @@ const WebcamWithLandmarks = ({exercise, callback}) => {
       } else if (exercise === Exercises.SITUPS) {
         const isUpPosition  = exerciseFunctions[exercise](results);
         if (isUpPosition && !situpsStateRef.current.wasUpPosition) {
-          setReps((prevReps) => prevReps + 1);
-          logRepInfo(results);
+          setReps((prevReps) => {
+            logRepInfo(results, prevReps + 1);
+            return prevReps + 1;
+            });
         }
         situpsStateRef.current.wasUpPosition = isUpPosition;
       } else if (exercise === Exercises.PLANK) {

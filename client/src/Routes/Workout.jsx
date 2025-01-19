@@ -4,9 +4,6 @@ import '../css/Workout.css';
 
 
 
-const finishWorkout = () => {
-    alert(`Workout finished!`);
-};
 
 const Workout = () => {
     const location = useLocation();
@@ -60,7 +57,6 @@ const Workout = () => {
                 ))}
             </div>
             <div className="bottom_buttons">
-            <button className="finish" onClick={finishWorkout}>Finish Workout</button>
             <button className="finish" onClick={goBack}>Go Back</button>
             </div>
         </div>

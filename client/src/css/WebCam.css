@@ -23,7 +23,7 @@
   }
   
 
-  .finish-exercise {
+  .back {
     display: flex;
     width: 300px;
     justify-content: center;
@@ -37,7 +37,7 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.finish-exercise:hover {
-    background-color: #6d5510; /* Slightly darker brown on hover */
+.back:hover {
+    background-color: #6d5510; 
     transform: scale(1.05);
 }

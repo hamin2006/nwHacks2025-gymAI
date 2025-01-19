@@ -7,13 +7,21 @@ const Exercise = () => {
     const location = useLocation();
     const { workout } = location.state || {};
     const navigate = useNavigate();
-    const onFinishExercise = (repInfo) => {
-        navigate("/workout");
+    const [done, setDone] = React.useState(false);
+    const [feedback, setFeedback] = React.useState("");
+
+    const onFinishExercise = async (repInfo) => {
+        const res = await APICaller.post("/feedback", {data : repInfo});
+        setFeedback(res.data.feedback);
+        setDone(true);
+        //navigate("/workout");
     };
+
     return (
-        <div className='exercise-container'>
+        <div className={`exercise-container ${done ? 'feedback' : ''}`}>
             <h1>{workout.name}</h1>
-            <WebCam exercise={workout.exercise} callback = {onFinishExercise}/>
+            {!done ? <WebCam exercise={workout.exercise} callback = {onFinishExercise}/> : <h3>{feedback}</h3>}
+            {done && <button className = "back" onClick={() => navigate("/workout")}>Go back</button>}
         </div>
     );
 };

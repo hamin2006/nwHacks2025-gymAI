@@ -87,6 +87,10 @@ body {
     margin-top: 30px;
 }
 
+.finish {
+    width: 400px;
+}
+
 /* Finish Workout & Go Back Buttons */
 .bottom_buttons button {
     background-color: #8b6914; /* Primary button color */
