@@ -1,4 +1,4 @@
-.WebCam {
+.webcam {
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -22,3 +22,22 @@
     transform-origin: center;
   }
   
+
+  .finish-exercise {
+    display: flex;
+    width: 300px;
+    justify-content: center;
+    background-color: #8b6914; /* Primary button color */
+    color: #fff;
+    font-size: 1rem;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.finish-exercise:hover {
+    background-color: #6d5510; /* Slightly darker brown on hover */
+    transform: scale(1.05);
+}

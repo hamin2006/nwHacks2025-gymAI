@@ -3,7 +3,7 @@ import { Holistic } from "@mediapipe/holistic";
 import { Camera } from "@mediapipe/camera_utils";
 import "../css/WebCam.css";
 
-const WebcamWithLandmarks = ({exercise}) => {
+const WebcamWithLandmarks = ({exercise, callback}) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [reps, setReps] = useState(0);
@@ -12,7 +12,7 @@ const WebcamWithLandmarks = ({exercise}) => {
   const armRaisedRef = useRef(false);
   const isInDownPositionRef = useRef(false);
   const situpsStateRef = useRef({ wasUpPosition: false });
-  
+  const repInfo = [];
   const Exercises = {
     SQUATS: "squats",
     PUSHUPS: "pushups",
@@ -122,9 +122,6 @@ const WebcamWithLandmarks = ({exercise}) => {
       const leftBody = calculateAngle(leftShoulder, leftHip, leftAnkle);
       const rightBody = calculateAngle(rightShoulder, rightHip, rightAnkle);
 
-      const leftArmAngle = calculateAngle(leftShoulder, leftElbow, leftWrist);
-      const rightArmAngle = calculateAngle(rightShoulder, rightElbow, rightWrist);
-
       const leftShoulderToTorsoY = Math.abs(leftShoulder.y - leftHip.y);
       const rightShoulderToTorsoY = Math.abs(rightShoulder.y - rightHip.y);
 
@@ -138,7 +135,47 @@ const WebcamWithLandmarks = ({exercise}) => {
       return isDown;
     }
   };
+
+  const finishExercise =  () => {
+
+    callback(repInfo);
+  };
   
+  const logRepInfo = (results) => {
+    const leftHip = results.poseLandmarks?.[23] || null;
+    const rightHip = results.poseLandmarks?.[24] || null;
+    const leftShoulder = results.poseLandmarks?.[11] || null;
+    const rightShoulder = results.poseLandmarks?.[12] || null;
+    const leftElbow = results.poseLandmarks?.[13] || null;
+    const rightElbow = results.poseLandmarks?.[14] || null;
+    const leftWrist = results.poseLandmarks?.[15] || null;
+    const rightWrist = results.poseLandmarks?.[16] || null;
+    const leftAnkle = results.poseLandmarks?.[27] || null;
+    const rightAnkle = results.poseLandmarks?.[28] || null;
+    const leftKnee = results.poseLandmarks?.[25] || null;
+    const rightKnee = results.poseLandmarks?.[26] || null;
+
+    if (exercise !== "plank" && exercise !== "wallsits") {
+      const repData = {
+        rep: reps,
+        landmarks: {
+          leftHip: { x: leftHip?.x, y: leftHip?.y },
+          rightHip: { x: rightHip?.x, y: rightHip?.y },
+          leftShoulder: { x: leftShoulder?.x, y: leftShoulder?.y },
+          rightShoulder: { x: rightShoulder?.x, y: rightShoulder?.y },
+          leftElbow: { x: leftElbow?.x, y: leftElbow?.y },
+          rightElbow: { x: rightElbow?.x, y: rightElbow?.y },
+          leftWrist: { x: leftWrist?.x, y: leftWrist?.y },
+          rightWrist: { x: rightWrist?.x, y: rightWrist?.y },
+          leftAnkle: { x: leftAnkle?.x, y: leftAnkle?.y },
+          rightAnkle: { x: rightAnkle?.x, y: rightAnkle?.y },
+          leftKnee: { x: leftKnee?.x, y: leftKnee?.y },
+          rightKnee: { x: rightKnee?.x, y: rightKnee?.y }
+        }
+      };
+      repInfo.push(repData);
+    };
+  };
 
   useEffect(() => {
     if (!videoRef.current || !canvasRef.current) return;
@@ -157,8 +194,8 @@ const WebcamWithLandmarks = ({exercise}) => {
       minTrackingConfidence: 0.5,
     });
 
-    const canvasCtx = canvasRef.current.getContext("2d");
-
+    const canvasCtx = canvasRef.current ? canvasRef.current.getContext("2d") : null;
+    if (canvasCtx) {
     holistic.onResults(async (results) => {
       // Set canvas dimensions to match video
       canvasRef.current.width = videoRef.current.videoWidth;
@@ -189,6 +226,7 @@ const WebcamWithLandmarks = ({exercise}) => {
         } else if (isUpPosition && isInDownPositionRef.current) {
           isInDownPositionRef.current = false;
           setReps((prevReps) => prevReps + 1);
+          logRepInfo(results);
         }
       } else if (exercise === Exercises.SQUATS) {
         const isDown = exerciseFunctions[exercise](results);
@@ -196,6 +234,7 @@ const WebcamWithLandmarks = ({exercise}) => {
           if (!armRaisedRef.current) {
             armRaisedRef.current = true;
             setReps((prevReps) => prevReps + 1);
+            logRepInfo(results);
           };
         } else {
           armRaisedRef.current = false;
@@ -204,6 +243,7 @@ const WebcamWithLandmarks = ({exercise}) => {
         const isUpPosition  = exerciseFunctions[exercise](results);
         if (isUpPosition && !situpsStateRef.current.wasUpPosition) {
           setReps((prevReps) => prevReps + 1);
+          logRepInfo(results);
         }
         situpsStateRef.current.wasUpPosition = isUpPosition;
       } else if (exercise === Exercises.PLANK) {
@@ -214,7 +254,7 @@ const WebcamWithLandmarks = ({exercise}) => {
       if (results.faceLandmarks) drawLandmarks(canvasCtx, results.faceLandmarks, "blue");
       if (results.leftHandLandmarks) drawLandmarks(canvasCtx, results.leftHandLandmarks, "lightgreen");
       if (results.rightHandLandmarks) drawLandmarks(canvasCtx, results.rightHandLandmarks, "lightgreen");
-    });
+    })};
 
     const camera = new Camera(videoRef.current, {
       onFrame: async () => {
@@ -257,6 +297,7 @@ const WebcamWithLandmarks = ({exercise}) => {
         ref={canvasRef}
       ></canvas>
       <h1>{exercise === Exercises.PLANK ? `Timer: ${timer} s` : `Reps: ${reps}`}</h1>
+      <button className="finish-exercise" onClick = {finishExercise}>Finish Exercise</button>
     </div>
   );
 };
