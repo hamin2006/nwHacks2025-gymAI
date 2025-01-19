@@ -29,8 +29,8 @@ const Workout = () => {
         { name: 'Push Ups', exercise: "pushups", reps: reps.pushups, progress: 0 },
         { name: 'Sit Ups', exercise: "situps", reps: reps.situps, progress: 0 },
         { name: 'Squats', exercise: "squats", reps: reps.squats, progress: 0 },
-        { name: 'Wall Sits', exercise: "wallsits", time: reps.wallsits, progress: 0 },
-        { name: 'Plank', exercise: "plank", time: reps.plank, progress: 0 },
+        { name: 'Wall Sits', exercise: "wallsits", time: reps.wallsits, progress: reps.wallsits },
+        { name: 'Plank', exercise: "plank", time: reps.plank, progress: reps.plank },
         { name: 'High Knees', exercise: "highknees", reps: reps.highknees, progress: 0 }
 
     ];
@@ -51,7 +51,7 @@ const Workout = () => {
                     <div key={index} className="workout-card">
                         <h2>{workout.name}</h2>
                         {workout.reps ? <p>Reps: {workout.reps}</p> : <p>Time: {workout.time} seconds</p>}
-                        {workout.reps ? <p>Progress: {workout.progress}/{workout.reps}</p> : <p>Progress: {workout.progress}/{workout.time} seconds</p>}
+                        {workout.reps ? <p>Progress: {workout.progress}/{workout.reps}</p> : <p>Progress: 0/{workout.time} seconds</p>}
                         <button className="start" onClick={() => startWorkout(workout.name)}>Start</button>
                     </div>
                 ))}

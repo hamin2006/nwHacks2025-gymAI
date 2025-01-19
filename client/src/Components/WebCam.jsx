@@ -3,11 +3,11 @@ import { Holistic } from "@mediapipe/holistic";
 import { Camera } from "@mediapipe/camera_utils";
 import "../css/WebCam.css";
 
-const WebcamWithLandmarks = ({exercise, callback}) => {
+const WebcamWithLandmarks = ({exercise, callback, time}) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [reps, setReps] = useState(0);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(time);
   const [isDown, setIsDown] = useState(false);
   const armRaisedRef = useRef(false);
   const isInDownPositionRef = useRef(false);
@@ -174,6 +174,26 @@ const WebcamWithLandmarks = ({exercise, callback}) => {
         }
       };
       setRepInfo((prevRepInfo) => [...prevRepInfo, repData]);
+    } else {
+      const repData = {
+        time: timer,
+        exercise,
+        landmarks: {
+          leftHip: { x: leftHip?.x, y: leftHip?.y },
+          rightHip: { x: rightHip?.x, y: rightHip?.y },
+          leftShoulder: { x: leftShoulder?.x, y: leftShoulder?.y },
+          rightShoulder: { x: rightShoulder?.x, y: rightShoulder?.y },
+          leftElbow: { x: leftElbow?.x, y: leftElbow?.y },
+          rightElbow: { x: rightElbow?.x, y: rightElbow?.y },
+          leftWrist: { x: leftWrist?.x, y: leftWrist?.y },
+          rightWrist: { x: rightWrist?.x, y: rightWrist?.y },
+          leftAnkle: { x: leftAnkle?.x, y: leftAnkle?.y },
+          rightAnkle: { x: rightAnkle?.x, y: rightAnkle?.y },
+          leftKnee: { x: leftKnee?.x, y: leftKnee?.y },
+          rightKnee: { x: rightKnee?.x, y: rightKnee?.y }
+        }
+      };
+      setRepInfo((prevRepInfo) => [...prevRepInfo, repData]);
     };
   };
 
@@ -254,6 +274,7 @@ const WebcamWithLandmarks = ({exercise, callback}) => {
         situpsStateRef.current.wasUpPosition = isUpPosition;
       } else if (exercise === Exercises.PLANK) {
         setIsDown(exerciseFunctions[exercise](results));
+        logRepInfo(results, timer);
       };
 
       if (results.poseLandmarks) drawLandmarks(canvasCtx, results.poseLandmarks, "red");

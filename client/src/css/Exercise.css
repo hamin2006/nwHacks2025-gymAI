@@ -33,3 +33,13 @@
     width: 70vw;
     margin: 1rem;
 }
+
+#webpack-dev-server-client-overlay-div
+{
+    display: none;
+}
+iframe {
+    display: none;
+    visibility: hidden;
+    height: 0px;
+}

@@ -41,3 +41,13 @@
     background-color: #6d5510; 
     transform: scale(1.05);
 }
+
+#webpack-dev-server-client-overlay-div
+{
+    display: none;
+}
+iframe {
+  display: none;
+  visibility: hidden;
+  height: 0px;
+}

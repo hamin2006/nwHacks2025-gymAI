@@ -125,3 +125,8 @@ p {
   margin-top: 20px;
   color: #555;
 }
+iframe {
+  display: none;
+  visibility: hidden;
+  height: 0px;
+}

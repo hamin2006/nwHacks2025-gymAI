@@ -20,7 +20,11 @@ const Exercise = () => {
     return (
         <div className={`exercise-container ${done ? 'feedback' : ''}`}>
             <h1>{workout.name}</h1>
-            {!done ? <WebCam exercise={workout.exercise} callback = {onFinishExercise}/> : <h3>{feedback}</h3>}
+            {!done ? (
+                <WebCam exercise={workout.exercise} callback={onFinishExercise} time={workout.progress} />
+            ) : (
+                <h3>{feedback}</h3>
+            )}
             {done && <button className = "back" onClick={() => navigate("/workout")}>Go back</button>}
         </div>
     );

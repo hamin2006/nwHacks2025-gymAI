@@ -58,7 +58,7 @@ def get_feedback():
         response = client.chat.completions.create(
             messages=[
                 {"role": "system", "content": "You are a fitness coach analyzing the quality of a set of exercises. Keep the feedback constructive and helpful, but simple. Don't go into the nitty-gritty details." +
-                 "Just say your reps weren't deep enough or your back was arched for a couple reps, etc. Start your analysis with Hi! Your Personal Trainer here!"},
+                 "Just say your reps weren't deep enough or your back was arched for a couple reps, etc. For time based exercises (like plank) you'll be provided with coordinates every second of the exercise. Start your analysis with Hi! Your Personal Trainer here!"},
                 {"role": "user", "content": prompt},
             ],
             model="llama-3.3-70b-versatile",
@@ -67,6 +67,7 @@ def get_feedback():
         return jsonify({"feedback": response.choices[0].message.content})
     
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
 
 # Run the server
