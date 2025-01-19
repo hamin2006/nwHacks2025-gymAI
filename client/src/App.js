@@ -3,6 +3,7 @@ import Home from "./Routes/Home";
 import "./css/App.css";
 import LoginPage from "./Routes/LoginPage";
 import Homepage from "./Routes/homepage";
+import Workout from "./Routes/Workout";
 
 function App() {
   return (
