@@ -1,111 +1,189 @@
 import React, { useEffect, useRef, useState } from "react";
-import * as pose from "@mediapipe/pose";
+import { Holistic } from "@mediapipe/holistic";
+import { Camera } from "@mediapipe/camera_utils";
 import "../css/WebCam.css";
 
-const PoseDetection = () => {
+const WebcamWithLandmarks = ({exercise}) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const [handRaised, setHandRaised] = useState(false);
+  const [reps, setReps] = useState(0);
+  const armRaisedRef = useRef(false);
+  const isInDownPositionRef = useRef(false);
+  const Exercises = {
+    SQUATS: "squats",
+    PUSHUPS: "pushups",
+    SITUPS: "situps",
+  };
+
+  const calculateAngle = (a, b, c) => {
+    const vector1 = { x: a.x - b.x, y: a.y - b.y };
+    const vector2 = { x: c.x - b.x, y: c.y - b.y };
+    const dotProduct = vector1.x * vector2.x + vector1.y * vector2.y;
+    const magnitude1 = Math.sqrt(vector1.x ** 2 + vector1.y ** 2);
+    const magnitude2 = Math.sqrt(vector2.x ** 2 + vector2.y ** 2);
+    const angleRad = Math.acos(dotProduct / (magnitude1 * magnitude2));
+    return (angleRad * 180) / Math.PI;
+  };
+
+  const exerciseFunctions = {
+    squats: (results) => {
+      // Squat detection logic
+      const leftHip = results.poseLandmarks[23];
+      const rightHip = results.poseLandmarks[24];
+      const leftKnee = results.poseLandmarks[25];
+      const rightKnee = results.poseLandmarks[26];
+      const leftAnkle = results.poseLandmarks[27];
+      const rightAnkle = results.poseLandmarks[28];
+  
+      const leftLegAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
+      const rightLegAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
+  
+      return ((leftLegAngle <= 100) && (rightLegAngle <= 100));
+    },
+  
+    pushups: (results) => {
+      const leftHip = results.poseLandmarks[23];
+      const rightHip = results.poseLandmarks[24];
+      const leftShoulder = results.poseLandmarks[11];
+      const rightShoulder = results.poseLandmarks[12];
+      const leftElbow = results.poseLandmarks[13];
+      const rightElbow = results.poseLandmarks[14];
+      const leftWrist = results.poseLandmarks[15];
+      const rightWrist = results.poseLandmarks[16];
+  
+      const leftArmAngle = calculateAngle(leftShoulder, leftElbow, leftWrist);
+      const rightArmAngle = calculateAngle(rightShoulder, rightElbow, rightWrist);
+
+      const leftShoulderToTorsoY = Math.abs(leftShoulder.y - leftHip.y);
+      const rightShoulderToTorsoY = Math.abs(rightShoulder.y - rightHip.y);
+
+      const threshold = 0.1;
+
+      const isLeftShoulderNearGround = leftShoulderToTorsoY < threshold;
+      const isRightShoulderNearGround = rightShoulderToTorsoY < threshold;
+  
+      const isDownPosition = (isLeftShoulderNearGround && isRightShoulderNearGround) && leftArmAngle < 100 && rightArmAngle < 100;
+
+      const isUpPosition = leftArmAngle > 160 && rightArmAngle > 160;
+  
+      return { isDownPosition, isUpPosition };
+    },
+  
+    situps: (results) => {
+      // Sit-up detection logic
+      const leftHip = results.poseLandmarks[23];
+      const rightHip = results.poseLandmarks[24];
+      const leftShoulder = results.poseLandmarks[11];
+      const rightShoulder = results.poseLandmarks[12];
+  
+      const calculateVerticalDistance = (a, b) => Math.abs(a.y - b.y);
+  
+      const torsoBent =
+        calculateVerticalDistance(leftShoulder, leftHip) < 0.2 &&
+        calculateVerticalDistance(rightShoulder, rightHip) < 0.2;
+  
+      return torsoBent;
+    },
+  };
+  
 
   useEffect(() => {
-    const setupWebcam = async () => {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
+    if (!videoRef.current || !canvasRef.current) return;
 
-      // Set up webcam video stream
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-      });
-      video.srcObject = stream;
+    const holistic = new Holistic({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`,
+    });
 
-      // Initialize MediaPipe Pose
-      const poseInstance = new pose.Pose({
-        locateFile: (file) => {
-          return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.3/${file}`;
-        },
-      });
+    holistic.setOptions({
+      modelComplexity: 1,
+      smoothLandmarks: true,
+      enableSegmentation: false,
+      smoothSegmentation: false,
+      refineFaceLandmarks: true,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+    });
 
-      // Set up Pose model on results callback
-      poseInstance.setOptions({
-        modelComplexity: 1,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
+    const canvasCtx = canvasRef.current.getContext("2d");
 
-      // Detect pose on each frame
-      const detectPose = () => {
-        poseInstance.send({ image: video }).then((results) => {
-          context.clearRect(0, 0, canvas.width, canvas.height); // Clear previous frame
-          context.drawImage(video, 0, 0, canvas.width, canvas.height); // Draw video
+    holistic.onResults((results) => {
+      // Set canvas dimensions to match video
+      canvasRef.current.width = videoRef.current.videoWidth;
+      canvasRef.current.height = videoRef.current.videoHeight;
 
-          // If pose is detected, draw keypoints and check if hand is raised
-          if (results.poseLandmarks) {
-            // Draw keypoints
-            const landmarks = results.poseLandmarks;
-            landmarks.forEach((landmark) => {
-              context.beginPath();
-              context.arc(
-                landmark.x * canvas.width,
-                landmark.y * canvas.height,
-                5,
-                0,
-                2 * Math.PI
-              );
-              context.fillStyle = "red";
-              context.fill();
-            });
+      // Clear canvas
+      canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
-            // Check if the hand is raised above the head
-            const leftShoulder = landmarks[11];
-            const leftElbow = landmarks[13];
-            const leftWrist = landmarks[15];
+      // Draw video feed
+      canvasCtx.drawImage(
+        results.image,
+        0,
+        0,
+        canvasRef.current.width,
+        canvasRef.current.height
+      );
 
-            // Simple logic: If the wrist is above the shoulder, consider hand raised
-            setHandRaised(leftWrist.y < leftShoulder.y);
-          }
-
-          requestAnimationFrame(detectPose);
+      // Function to draw landmarks
+      const drawLandmarks = (ctx, landmarks, color) => {
+        ctx.fillStyle = color;
+        landmarks.forEach((landmark) => {
+          const x = landmark.x * canvasRef.current.width;
+          const y = landmark.y * canvasRef.current.height;
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, 2 * Math.PI);
+          ctx.fill();
         });
       };
 
-      detectPose();
-    };
+    const { isDownPosition, isUpPosition } = exerciseFunctions[exercise](results);
 
-    setupWebcam();
+    if (isDownPosition && !isInDownPositionRef.current) {
+      // Enter "down" position
+      isInDownPositionRef.current = true;
+    } else if (isUpPosition && isInDownPositionRef.current) {
+      // Transition from "down" to "up" -> Count a rep
+      isInDownPositionRef.current = false;
+      setReps((prevReps) => prevReps + 1);
+    }
+      
+
+      // Draw landmarks
+      if (results.poseLandmarks) drawLandmarks(canvasCtx, results.poseLandmarks, "red");
+      if (results.faceLandmarks) drawLandmarks(canvasCtx, results.faceLandmarks, "blue");
+      if (results.leftHandLandmarks) drawLandmarks(canvasCtx, results.leftHandLandmarks, "green");
+      if (results.rightHandLandmarks) drawLandmarks(canvasCtx, results.rightHandLandmarks, "yellow");
+    });
+
+    const camera = new Camera(videoRef.current, {
+      onFrame: async () => {
+        await holistic.send({ image: videoRef.current });
+      },
+      width: 640,
+      height: 480,
+    });
+
+    camera.start();
 
     return () => {
-      // Clean up when component unmounts
-      const video = videoRef.current;
-      const stream = video.srcObject;
-      if (stream) {
-        const tracks = stream.getTracks();
-        tracks.forEach((track) => track.stop());
-      }
+      camera.stop();
+      holistic.close();
     };
   }, []);
 
   return (
-    <div className="App">
-      <h1>Gym Trainer - Hand Above Head</h1>
+    <div className="webcam">
       <video
         ref={videoRef}
-        width="640"
-        height="480"
+        style={{ display: "none" }}
         autoPlay
         muted
-        style={{ display: "none" }}
       ></video>
-      <canvas ref={canvasRef} width="640" height="480"></canvas>
-      <div>
-        {handRaised ? (
-          <p>Hand raised above the head! Red dot on face.</p>
-        ) : (
-          <p>Move your hand above the head to trigger the effect.</p>
-        )}
-      </div>
+      <canvas
+        ref={canvasRef}
+      ></canvas>
+      <h1>Reps: {reps}</h1>
     </div>
   );
 };
 
-export default PoseDetection;
+export default WebcamWithLandmarks;
