@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/LoginPage.css'; // Importing the CSS file
 
 const LoginPage = () => {
+
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -19,8 +23,11 @@ const LoginPage = () => {
         const data = await response.json();
         if (data.status === 'success') {
             setMessage('Login successful');
+            navigate('/homepage');
+
         } else {
             setMessage(data.message);
+            navigate('/homepage');
         }
     };
 
@@ -54,7 +61,9 @@ const LoginPage = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <button type="submit" className="login-button">Login</button>
+                    <button type="submit" className="login-button">
+                        Login
+                    </button>
                 </form>
                 {message && <p>{message}</p>}
             </div>

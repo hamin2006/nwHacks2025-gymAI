@@ -26,6 +26,8 @@ const Workout = () => {
         navigate('/homepage'); // Navigate to the Homepage route
     };
 
+  
+
     return (
         <div className="workout-container">
             <div className="workout-columns">
