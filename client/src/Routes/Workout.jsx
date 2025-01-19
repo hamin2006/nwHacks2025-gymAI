@@ -2,9 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../css/Workout.css';
 
-const startWorkout = (workoutName) => {
-    alert(`${workoutName} workout started!`);
-};
+
 
 const finishWorkout = () => {
     alert(`Workout finished!`);
@@ -18,11 +16,11 @@ const Workout = () => {
     const getReps = (intensity) => {
         switch (intensity) {
             case "beginner":
-                return 8;
+                return {pushups : 5, situps: 5, squats : 5, wallsits : 30, plank : 30, highknees : 5};
             case "intermediate":
-                return 12;
+                return {pushups : 10, situps : 10, squats : 10, wallsits : 60, plank : 60, highknees : 10};
             case "advanced":
-                return 20;
+                return {pushups : 15, situps : 15, squats : 15, wallsits : 90, plank : 90, highknees : 15};
             default:
                 return 0;
         }
@@ -31,20 +29,22 @@ const Workout = () => {
     const reps = getReps(intensity);
 
     const workouts = [
-        { name: 'Push Up', reps },
-        { name: 'Sit Up', reps },
-        { name: 'Squats', reps },
+        { name: 'Push Ups', exercise: "pushups", reps: reps.pushups, progress: 0 },
+        { name: 'Sit Ups', exercise: "situps", reps: reps.situps, progress: 0 },
+        { name: 'Squats', exercise: "squats", reps: reps.squats, progress: 0 },
+        { name: 'Wall Sits', exercise: "wallsits", time: reps.wallsits, progress: 0 },
+        { name: 'Plank', exercise: "plank", time: reps.plank, progress: 0 },
+        { name: 'High Knees', exercise: "highknees", reps: reps.highknees, progress: 0 }
 
     ];
 
-    const workoutsTwo = [
-        { name: 'Wall Sits', reps },
-        { name: 'Plank', reps },
-        { name: 'High Knees', reps }
-    ];
+
+    const startWorkout = (workoutName) => {
+        navigate('/exercise', { state: { workout: workouts.find(workout => workout.name === workoutName) } });
+    };
 
     const goBack = () => {
-        navigate('/homepage'); // Navigate to the Homepage route
+        navigate('/homepage');
     };
 
     return (
@@ -53,16 +53,8 @@ const Workout = () => {
                 {workouts.map((workout, index) => (
                     <div key={index} className="workout-card">
                         <h2>{workout.name}</h2>
-                        <p>Reps: {workout.reps}</p>
-                        <button className="start" onClick={() => startWorkout(workout.name)}>Start</button>
-                    </div>
-                ))}
-            </div>
-            <div className="workout-columns">
-                {workoutsTwo.map((workout, index) => (
-                    <div key={index} className="workout-card">
-                        <h2>{workout.name}</h2>
-                        <p>Reps: {workout.reps}</p>
+                        {workout.reps ? <p>Reps: {workout.reps}</p> : <p>Time: {workout.time} seconds</p>}
+                        {workout.reps ? <p>Progress: {workout.progress}/{workout.reps}</p> : <p>Progress: {workout.progress}/{workout.time} seconds</p>}
                         <button className="start" onClick={() => startWorkout(workout.name)}>Start</button>
                     </div>
                 ))}

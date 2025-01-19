@@ -12,6 +12,7 @@ const WebcamWithLandmarks = ({exercise}) => {
   const armRaisedRef = useRef(false);
   const isInDownPositionRef = useRef(false);
   const situpsStateRef = useRef({ wasUpPosition: false });
+  
   const Exercises = {
     SQUATS: "squats",
     PUSHUPS: "pushups",
@@ -195,10 +196,6 @@ const WebcamWithLandmarks = ({exercise}) => {
           if (!armRaisedRef.current) {
             armRaisedRef.current = true;
             setReps((prevReps) => prevReps + 1);
-            const munch = (ms) => {
-              return new Promise(resolve => setTimeout(resolve, ms));
-            };
-            await munch(1000);
           };
         } else {
           armRaisedRef.current = false;
@@ -207,7 +204,6 @@ const WebcamWithLandmarks = ({exercise}) => {
         const isUpPosition  = exerciseFunctions[exercise](results);
         if (isUpPosition && !situpsStateRef.current.wasUpPosition) {
           setReps((prevReps) => prevReps + 1);
-          setTimeout(() => {}, 1000);
         }
         situpsStateRef.current.wasUpPosition = isUpPosition;
       } else if (exercise === Exercises.PLANK) {

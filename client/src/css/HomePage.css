@@ -10,19 +10,19 @@ body {
 /* Homepage Container */
 .homepage-container {
     display: flex;
-    flex-direction: row; /* Two columns */
+    flex-direction: row; /* Two columns layout */
     width: 100vw; /* Full viewport width */
     height: 100vh; /* Full viewport height */
     background: linear-gradient(135deg, #eed9c4, #d6bfa3); /* Warm beige gradient */
-    color: #333; /* Dark gray for text */
+    color: #333; /* Dark gray text */
     margin: 0;
     padding: 0;
 }
 
 /* Left Column: Previous Workouts */
 .previous-workouts {
-    flex: 0 0 30%; /* Fix the width to 30% of the container */
-    max-width: 30%; /* Prevent it from growing too large */
+    flex: 0 0 30%; /* Fix the width to 30% */
+    max-width: 30%; /* Prevent from growing too large */
     background: #fff8e1; /* Light cream background */
     padding: 20px;
     border-right: 2px solid #e3e8ef; /* Subtle border */
@@ -31,10 +31,10 @@ body {
     overflow-y: auto; /* Scroll if content exceeds height */
 }
 
-/* Flex Container for Workout Cards */
+/* Workout Cards Container */
 .previous-workouts .workouts-container {
     display: flex;
-    flex-direction: column; /* Stack items vertically */
+    flex-direction: column;
     gap: 15px; /* Space between the cards */
     margin-top: 20px;
     align-items: center;
@@ -43,18 +43,24 @@ body {
 /* Workout Card Styling */
 .workout-card {
     flex: none; /* Prevent flexbox from shrinking or growing cards */
-    width: 100%; /* Make cards take the full width of the container */
+    min-width: 300px; /* Make cards take full width */
     background: #fff8e1; /* Light cream background */
     color: #333; /* Dark text */
     border-radius: 15px;
     padding: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.workout-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Right Column: Welcome Section */
 .welcome-section {
-    flex: 1; /* Takes up the remaining space */
+    flex: 1; /* Takes up remaining space */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -69,7 +75,7 @@ body {
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #333; /* Dark text color */
+    color: #333;
 }
 
 /* Add Workout Button */
@@ -144,5 +150,66 @@ form button:hover {
     background-color: #6d5510; /* Slightly darker brown on hover */
     transform: scale(1.05); /* Subtle scale effect */
 }
+.workout-card {
+    flex: none; /* Prevent flexbox from shrinking or growing cards */
+    width: 100%; /* Make cards take full width */
+    background: linear-gradient(145deg, #fff8e1, #e6d0b3); /* Soft gradient background */
+    color: #333; /* Dark text */
+    border-radius: 15px; /* Rounded corners */
+    padding: 20px; /* Increased padding for better spacing */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Larger, softer shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+    overflow: hidden; /* Ensure content doesn't overflow */
+    position: relative;
+}
 
-  
+/* Hover Effect for Workout Card */
+.workout-card:hover {
+    transform: translateY(-5px); /* Slight upward movement on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+    background-color: #f2e0a1; /* Lighter background color for hover effect */
+}
+
+/* Card Title Styling */
+.workout-card .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #6a4e23; /* Rich brown color for titles */
+}
+
+/* Card Content (Description) */
+.workout-card .card-content {
+    font-size: 1rem;
+    color: #555; /* Lighter gray for text */
+    line-height: 1.5; /* Better line spacing */
+    margin-bottom: 10px;
+}
+
+/* Card Footer Styling */
+.workout-card .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #8b6914; /* Muted brown for footer */
+}
+
+/* Icon/Button in Card Footer */
+.workout-card .card-footer .btn {
+    background-color: #8b6914; /* Matching button color */
+    color: #fff; /* White text */
+    padding: 5px 10px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover Effect for Footer Button */
+.workout-card .card-footer .btn:hover {
+    background-color: #6d5510; /* Slightly darker brown on hover */
+    transform: scale(1.05); /* Subtle scale effect */
+}
