@@ -3,12 +3,15 @@ import Home from "./Routes/Home";
 import "./css/App.css";
 import LoginPage from "./Routes/LoginPage";
 import Homepage from "./Routes/homepage";
+import Workout from "./Routes/Workout";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/workout" element={<Workout />} />
+        <Route path="/homepage" element={<Homepage />} />
       </Routes>
     </Router>
   );
