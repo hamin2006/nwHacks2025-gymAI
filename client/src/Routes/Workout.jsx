@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import '../css/Workout.css'; // Importing the CSS file
 
 const workouts = [
@@ -19,17 +20,35 @@ const finishWorkout = () => {
 };
 
 const Workout = () => {
+    const navigate = useNavigate(); // Initialize the navigate function
+
+    const goBack = () => {
+        navigate('/homepage'); // Navigate to the Homepage route
+    };
+
     return (
         <div className="workout-container">
             <div className="workout-columns">
                 {workouts.map((workout, index) => (
                     <div key={index} className={`workout-column ${index === 1 ? 'middle-column' : ''}`}>
                         <p>{workout.name}: {workout.reps} reps</p>
-                        <button className="start-workout-button" onClick={() => startWorkout(workout.name)}>Start Workout</button>
+                        <button
+                            className="start-workout-button"
+                            onClick={() => startWorkout(workout.name)}
+                        >
+                            Start Workout
+                        </button>
                     </div>
                 ))}
             </div>
-            <button className="finish-workout-button" onClick={finishWorkout}>Finish Workout</button>
+            <div className="workout-buttons">
+                <button className="finish-workout-button" onClick={finishWorkout}>
+                    Finish Workout
+                </button>
+                <button className="back-button" onClick={goBack}>
+                    Back
+                </button>
+            </div>
         </div>
     );
 };
