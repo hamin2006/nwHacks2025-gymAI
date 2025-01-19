@@ -10,11 +10,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-<<<<<<< HEAD
-=======
         <Route path="/homepage" element={<Homepage />} />
         <Route path="/workout" element={<Workout />} />
->>>>>>> 534e89a273855a1d040f10b56975091c60804dc7
       </Routes>
     </Router>
   );
