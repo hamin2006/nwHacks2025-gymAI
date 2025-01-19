@@ -18,7 +18,7 @@ def handle_login():
     data = request.get_json()
     if not data or 'username' not in data or 'password' not in data:
         return jsonify({"status": "failed", "message": "Missing credentials"})
-    
+    print(data)
     username = data['username']
     password = data['password']
     if username == os.getenv("USERNAME") and password == os.getenv("PASS"):

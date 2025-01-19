@@ -1,89 +1,208 @@
-/* General Styling */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5; /* Light gray background */
-    color: #333; /* Text color */
-    box-sizing: border-box;
-}
-
 /* Main Container */
 .homepage-container {
     display: flex;
     flex-direction: row; /* Two columns */
-    justify-content: space-between;
-    align-items: stretch; /* Ensure both columns stretch to full height */
     width: 100vw; /* Full viewport width */
     height: 100vh; /* Full viewport height */
     background: #ffffff;
-    color: rgb(0, 0, 0);
+    color: #000;
     margin: 0;
     padding: 0;
 }
 
 /* Left Column: Previous Workouts */
 .previous-workouts {
-    flex: 1; /* Left column takes 1/3 of the width */
-    display: flex;
-    flex-direction: column; /* Stack content vertically */
-    justify-content: flex-start; /* Align items to the top */
-    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent box */
+    flex: 0 0 30%; /* Fix the width to 30% of the container */
+    max-width: 30%; /* Prevent it from growing too large */
+    background-color: #f9fafc; /* Light background for contrast */
     padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-right: 2px solid #e3e8ef; /* Subtle border */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05); /* Light shadow */
+    border-radius: 10px 0 0 10px;
+    overflow-y: auto; /* Scroll if content exceeds height */
 }
 
-/* Workout Cards */
+/* Flex Container for Workout Cards */
+.previous-workouts .workouts-container {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    gap: 15px; /* Space between the cards */
+    margin-top: 20px;
+}
+
+/* Workout Card Styling */
 .workout-card {
-    background-color: white;
-    color: #333;
-    border-radius: 10px;
+    flex: none; /* Prevent flexbox from shrinking or growing cards */
+    width: 100%; /* Make cards take the full width of the container */
+    background-color: #ffffff;
+    color: #333333;
+    border-radius: 15px;
     padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.workout-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.workout-title {
-    font-size: 1.25rem;
-    margin-bottom: 5px;
-}
-
-/* Add Workout Button */
-.add-workout {
-    text-align: center;
-    background-color: #000000;
-    color: white;
-    font-size: 1.2rem;
-    border-radius: 10px;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin-top: auto; /* Push the button to the bottom of the column */
-}
-
-.add-workout:hover {
-    background-color: #000000;
-}
 
 /* Right Column: Welcome Section */
 .welcome-section {
-    flex: 2; /* Right column takes 2/3 of the width */
+    flex: 1; /* Takes up the remaining space */
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     padding: 20px;
     flex-direction: column;
+    background-color: #ffffff;
 }
 
+/* Welcome Title */
 .welcome-title {
     font-size: 2.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
+/* Add Workout Button */
+.add-workout {
+    background-color: #007acc; /* Bright primary button color */
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: 20px;
+}
+
+.add-workout:hover {
+    background-color: #005fa3; /* Darker shade on hover */
+    transform: scale(1.05);
+}
+
+/* General Form Styling */
+.workout-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between form elements */
+    background-color: #f9fafc; /* Light background */
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    max-width: 350px; /* Limit the width of the form */
+    width: 100%; /* Ensure responsiveness */
+    margin: 20px auto; /* Center the form horizontally */
+  }
+  
+  /* Input Field Styling */
+  form input,
+  form select {
+    width: 100%; /* Ensure it stays within the container */
+    max-width: 300px; /* Set a maximum width for the inputs */
+    padding: 12px 15px;
+    border: 1px solid #e3e8ef;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #ffffff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  form input:focus,
+  form select:focus {
+    border-color: #007acc; /* Highlight border */
+    box-shadow: 0 0 8px rgba(0, 122, 204, 0.2); /* Subtle glow effect */
+    outline: none;
+  }
+  
+  /* Submit Button Styling */
+  form button {
+    max-width: 300px; /* Match button width to input fields */
+    background-color: #007acc; /* Primary button color */
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  form button:hover {
+    background-color: #005fa3; /* Slightly darker blue on hover */
+    transform: scale(1.05); /* Subtle scale effect */
+  }
+  
+  
+  /* Welcome Section Styling */
+  .welcome-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #ffffff;
+    padding: 20px;
+  }
+  
+  .welcome-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .welcome-message {
+    font-size: 1.2rem;
+    color: #666666;
+  }
+  
+  /* Previous Workouts Section */
+  .previous-workouts {
+    padding: 20px;
+    border-right: 2px solid #e3e8ef;
+    overflow-y: auto;
+  }
+  
+  .previous-workouts h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #007acc;
+  }
+  
+  .workouts-container {
+    display: flex;
+    flex-direction: column; /* Stack workout cards */
+    gap: 15px;
+  }
+  
+  .workout-card {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .workout-card .workout-title {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  .workout-card .workout-details {
+    font-size: 0.9rem;
+    color: #666666;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .homepage-container {
+      flex-direction: column; /* Stack columns on smaller screens */
+    }
+  
+    .previous-workouts {
+      border-right: none;
+      border-bottom: 2px solid #e3e8ef;
+      padding-bottom: 20px;
+    }
+  }
+  
